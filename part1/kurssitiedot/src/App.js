@@ -21,7 +21,7 @@ const Content = (props) => {
     <div>
       <Part part = {props.p1.name} exercises = {props.p1.exercises} />
       <Part part = {props.p2.name} exercises = {props.p2.exercises} />
-      <Part part = {props.p3.name} exercises = {props.p2.exercises} />
+      <Part part = {props.p3.name} exercises = {props.p3.exercises} />
     </div>
   )
 }
