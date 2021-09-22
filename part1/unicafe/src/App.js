@@ -12,6 +12,9 @@ const Display = ({text, count}) => (
 
 const Statistics = ({good, neutral, bad}) => {
   const all = good + neutral + bad
+  if (all === 0) return (
+    <div>No feedback given</div>
+  )
   const avg = (good - bad) / all
   
   return (
