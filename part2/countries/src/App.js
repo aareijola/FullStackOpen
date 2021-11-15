@@ -51,14 +51,14 @@ const LastResult = ({country}) => {
   return (
   <div>
     <h1>{country.name.common}</h1>
-    <div>capital {country.capital}</div>
+    <div>capital {country.capital ? country.capital : ""}</div>
     <div>population {country.population}</div>
     <h2>languages</h2>
     <ul>
       {Object.values(country.languages).map((name) => <li key = {name}>{name}</li> )}
     </ul>
     <img src = {country.flags.png} alt = "flag"/>
-    <Weather city = {country.capital}/>
+    {country.capital ? <Weather city = {country.capital}/>: <div/>}
   </div>
   )
 }
