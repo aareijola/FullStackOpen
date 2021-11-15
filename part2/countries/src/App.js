@@ -17,10 +17,6 @@ const App = () => {
     setFilter(event.target.value)
   }
 
-  const handleButtonClick = () => {
-    setFilter()
-  }
-
   return (
     <div>
       Find countries <input value = {filter} onChange = {handleFilterChange} />
@@ -62,8 +58,31 @@ const LastResult = ({country}) => {
       {Object.values(country.languages).map((name) => <li key = {name}>{name}</li> )}
     </ul>
     <img src = {country.flags.png} alt = "flag"/>
+    <Weather city = {country.capital}/>
   </div>
   )
+}
+
+const Weather = ({city}) => {
+  const [data, setData] = useState([])
+  const apikey = process.env.REACT_APP_API_KEY
+  const query = `http://api.weatherstack.com/current?access_key=${apikey}&query=${city}`
+  useEffect(() => {
+    axios
+      .get(query)
+      .then( response => {
+        setData(response.data)
+      })
+  }, [query])
+  
+  if (data.length === 0) return (<div></div>)
+  return (
+  <div>
+    <h2>Weather in {city}</h2>
+    <p><b>Temperature:</b> {data.current.temperature} degrees</p>
+    <img src = {data.current.weather_icons} alt = "weather"/>
+    <p><b>Wind:</b> {data.current.wind_speed} mph direction {data.current.wind_dir}</p>
+  </div>)
 }
 
 export default App
