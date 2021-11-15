@@ -46,22 +46,28 @@ const App = () => {
       <h1>Phonebook</h1>
       <FilterForm filterText = {filter} onChange = {handleFilterChange}/>
       <h1>Add new</h1>
-      <form onSubmit = {addNewPerson}>
-        <div>
-          name: <input value = {newName} onChange = {handleNameChange} />
-        </div>
-        <div> 
-          number: <input value = {newNumber} onChange = {handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <NewPersonForm addNewPerson = {addNewPerson} newName = {newName} handleNameChange = {handleNameChange} newNumber = {newNumber} handleNumberChange = {handleNumberChange} />
       <h1>Numbers</h1>
       <Persons persons = {personsToShow}/>
     </div>
   )
 
+}
+
+const NewPersonForm = ({addNewPerson, newName, handleNameChange, newNumber, handleNumberChange}) => {
+  return (
+    <form onSubmit = {addNewPerson}>
+      <div>
+        name: <input value = {newName} onChange = {handleNameChange} />
+      </div>
+      <div> 
+        number: <input value = {newNumber} onChange = {handleNumberChange} />
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  )
 }
 
 const Persons = ({persons}) => {
