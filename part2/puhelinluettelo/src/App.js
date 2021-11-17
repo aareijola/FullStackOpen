@@ -18,6 +18,14 @@ const App = () => {
     setNewName(event.target.value)
   }
 
+  const removePerson = (person) => {
+    if (window.confirm(`Really delete ${person.name}?`)) {
+      communication.remove(person.id).then(() => {
+      setPersons(persons.filter((p) => p.id !== person.id))
+    })}
+  }
+  
+  
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value)
   }
@@ -51,7 +59,7 @@ const App = () => {
       <h1>Add new</h1>
       <NewPersonForm addNewPerson = {addNewPerson} newName = {newName} handleNameChange = {handleNameChange} newNumber = {newNumber} handleNumberChange = {handleNumberChange} />
       <h1>Numbers</h1>
-      <Persons persons = {personsToShow}/>
+      <Persons persons = {personsToShow} removePerson = {removePerson}/>
     </div>
   )
 
@@ -73,12 +81,12 @@ const NewPersonForm = ({addNewPerson, newName, handleNameChange, newNumber, hand
   )
 }
 
-const Persons = ({persons}) => {
-  return <div>{ persons.map(person => <Person person = {person} key = {person.name} />) }</div>
+const Persons = ({persons, removePerson}) => {
+  return <div>{ persons.map(person => <Person person = {person} key = {person.name} removePerson = {removePerson}/>) }</div>
 }
 
-const Person = ({person}) => {
-  return <div>{person.name} {person.number}</div>
+const Person = ({person, removePerson}) => {
+  return <div>{person.name} {person.number} <button onClick = {() => removePerson(person)}>delete</button> </div>
 }
 
 const FilterForm = ({filterText, onChange}) => {
