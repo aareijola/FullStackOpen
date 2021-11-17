@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import communication from './services/communication'
+import './index.css'
 
 const App = () => {
   const [ persons, setPersons] = useState([]) 
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber] = useState('')
   const [ filter, setFilter] = useState('')
-
+  const [ notificationMessage, setNotificationMessage] = useState("")
   const personsToShow = persons.filter((person) => person.name.toLowerCase().includes(filter.toLowerCase()))
   
   useEffect(() => {
     communication.getAll().then(persons => setPersons(persons))
   }, [])
-  
   
   const handleNameChange  = (event) => {
     setNewName(event.target.value)
@@ -22,9 +22,11 @@ const App = () => {
     if (window.confirm(`Really delete ${person.name}?`)) {
       communication.remove(person.id).then(() => {
       setPersons(persons.filter((p) => p.id !== person.id))
-    })}
+      setNotificationMessage(`Removed ${person.name}`)
+      setTimeout(() => setNotificationMessage(""), 5000)
+    })
+    }
   }
-  
   
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value)
@@ -43,6 +45,8 @@ const App = () => {
       }
       communication.create(newPersonObject).then(returned => {
         setPersons(persons.concat(returned))
+        setNotificationMessage(`Added ${returned.name}`)
+        setTimeout(() => setNotificationMessage(""), 5000)
         setNewName("")
         setNewNumber("")
       })
@@ -51,9 +55,11 @@ const App = () => {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         const person = persons.find(p => p.name === newName)
         const newPersonObject = { ...person, number : newNumber}
-        communication.update(newPersonObject.id, newPersonObject).then(setPersons(
-          persons.map(person => person.id !== newPersonObject.id ? person : newPersonObject)
-        ))
+        communication.update(newPersonObject.id, newPersonObject).then((returned) => {
+          setPersons(persons.map(person => person.id !== newPersonObject.id ? person : newPersonObject))
+          setNotificationMessage(`Updated ${returned.name}`)
+          setTimeout(() => setNotificationMessage(""), 5000)
+        })
       }
     }
   }
@@ -61,6 +67,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message = {notificationMessage}/>
       <FilterForm filterText = {filter} onChange = {handleFilterChange}/>
       <h1>Add new</h1>
       <NewPersonForm addNewPerson = {addNewPerson} newName = {newName} handleNameChange = {handleNameChange} newNumber = {newNumber} handleNumberChange = {handleNumberChange} />
@@ -68,7 +75,17 @@ const App = () => {
       <Persons persons = {personsToShow} removePerson = {removePerson}/>
     </div>
   )
+}
 
+const Notification = ({message}) => {
+  if (message === "") {
+    return null
+  }
+  return (
+    <div className = "notification">
+      {message}
+    </div>
+  )
 }
 
 const NewPersonForm = ({addNewPerson, newName, handleNameChange, newNumber, handleNumberChange}) => {
@@ -102,6 +119,5 @@ const FilterForm = ({filterText, onChange}) => {
     </div>
   )
 }
-
 
 export default App
