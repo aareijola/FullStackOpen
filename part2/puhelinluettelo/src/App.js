@@ -8,6 +8,7 @@ const App = () => {
   const [ newNumber, setNewNumber] = useState('')
   const [ filter, setFilter] = useState('')
   const [ notificationMessage, setNotificationMessage] = useState("")
+  const [ alertMessage, setAlertMessage] = useState("")
   const personsToShow = persons.filter((person) => person.name.toLowerCase().includes(filter.toLowerCase()))
   
   useEffect(() => {
@@ -59,6 +60,10 @@ const App = () => {
           setPersons(persons.map(person => person.id !== newPersonObject.id ? person : newPersonObject))
           setNotificationMessage(`Updated ${returned.name}`)
           setTimeout(() => setNotificationMessage(""), 5000)
+        }).catch(() => {
+          setAlertMessage(`Information of ${person.name} has already been removed from server`)
+          setTimeout(() => {setAlertMessage("")}, 5000)
+          communication.getAll().then(persons => setPersons(persons))
         })
       }
     }
@@ -68,6 +73,7 @@ const App = () => {
     <div>
       <h1>Phonebook</h1>
       <Notification message = {notificationMessage}/>
+      <Alert message = {alertMessage}/>
       <FilterForm filterText = {filter} onChange = {handleFilterChange}/>
       <h1>Add new</h1>
       <NewPersonForm addNewPerson = {addNewPerson} newName = {newName} handleNameChange = {handleNameChange} newNumber = {newNumber} handleNumberChange = {handleNumberChange} />
@@ -83,6 +89,17 @@ const Notification = ({message}) => {
   }
   return (
     <div className = "notification">
+      {message}
+    </div>
+  )
+}
+
+const Alert = ({message}) => {
+  if (message === "") {
+    return null
+  }
+  return (
+    <div className = "alert">
       {message}
     </div>
   )
