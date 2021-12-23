@@ -50,6 +50,9 @@ const App = () => {
         setTimeout(() => setNotificationMessage(""), 5000)
         setNewName("")
         setNewNumber("")
+      }).catch(error => {
+        setAlertMessage(error.response.data.error)
+        setTimeout(() => setAlertMessage(""), 5000)
       })
     }
     else {
