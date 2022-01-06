@@ -112,3 +112,20 @@ describe('author with most blogs', () => {
         })
     })
 })
+
+describe('author with most likes', () => {
+    test('in a list with one blog is the only author', () => {
+        const oneBlogList = [listWithManyBlogs[0]]
+        expect(listHelper.mostLikes(oneBlogList)).toEqual({
+            author: "Michael Chan",
+            likes:7
+        })
+    })
+
+    test('in a bigger list is the correct author', () => {
+        expect(listHelper.mostLikes(listWithManyBlogs)).toEqual({
+            author: "Edsger W. Dijkstra",
+            likes: 17
+        })
+    })
+})

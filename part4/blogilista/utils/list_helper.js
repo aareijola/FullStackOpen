@@ -39,7 +39,6 @@ const mostBlogs = (blogs) => {
                 )
         }
     })
-    console.log('Authors:', authors)
     authors.forEach(author => {
         if (author.blogs > topAuthor.blogs) {
             topAuthor = author
@@ -48,9 +47,37 @@ const mostBlogs = (blogs) => {
     return (topAuthor.blogs > 0) ? topAuthor : {}
 }
 
+const mostLikes = (blogs) => {
+    let topAuthor = {
+        author: "",
+        likes: 0
+    }
+    let authors = []
+    blogs.forEach(blog => {
+        if (!authors.find(a => a.author === blog.author)) {
+            authors = authors.concat({
+                author: blog.author,
+                likes: blog.likes
+            })
+        } else {
+            authors = authors.map(a => a.author === blog.author
+                ? {...a, likes: a.likes + blog.likes}
+                : a
+                )
+        }
+    })
+    authors.forEach(author => {
+        if (author.likes > topAuthor.likes) {
+            topAuthor = author
+        }
+    })
+    return (topAuthor.likes > 0) ? topAuthor : {}
+}
+
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikes
 }
