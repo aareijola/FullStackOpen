@@ -95,3 +95,20 @@ describe('favorite blog', () => {
         )
     })
 })
+
+describe('author with most blogs', () => {
+    test('in a list with one blog is the only author', () => {
+        const oneBlogList = [listWithManyBlogs[0]]
+        expect(listHelper.mostBlogs(oneBlogList)).toEqual({
+            author: "Michael Chan",
+            blogs: 1
+        })
+    })
+
+    test('in a bigger list is the correct author', () => {
+        expect(listHelper.mostBlogs(listWithManyBlogs)).toEqual({
+            author: "Robert C. Martin",
+            blogs: 3
+        })
+    })
+})
