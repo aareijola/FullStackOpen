@@ -29,14 +29,14 @@ describe('HTTP GET', () => {
 })
 
 describe('HTTP POST', () => {
+    const newBlog = {
+        title: "This is a new blog",
+        author: "aareijo",
+        url: "www.validurl.com",
+        likes: 32
+    }
+    
     test('adding blogs adds the blog to the db', async () => {
-        const newBlog = {
-            title: "This is a new blog",
-            author: "aareijo",
-            url: "www.validurl.com",
-            likes: 32
-        }
-        
         await api
             .post('/api/blogs')
             .send(newBlog)
@@ -47,6 +47,13 @@ describe('HTTP POST', () => {
         const titles = res.body.map(b => b.title)
         expect(titles).toHaveLength(helper.initialBlogs.length + 1)
         expect(titles).toContain("This is a new blog")
+    })
+    test('adding a blog without the like field sets likes to 0', async () => {
+        const {likes, ...newBlogWithoutLikes} = newBlog
+        await api.post('/api/blogs').send(newBlogWithoutLikes)
+        const res = await api.get('/api/blogs')
+        const addedBlog = res.body.find(b => b.author === 'aareijo')
+        expect(addedBlog.likes).toEqual(0)
     })
 })
 
