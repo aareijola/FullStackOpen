@@ -28,6 +28,28 @@ describe('HTTP GET', () => {
     })
 })
 
+describe('HTTP POST', () => {
+    test('adding blogs adds the blog to the db', async () => {
+        const newBlog = {
+            title: "This is a new blog",
+            author: "aareijo",
+            url: "www.validurl.com",
+            likes: 32
+        }
+        
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+
+        const res = await api.get('/api/blogs')
+        const titles = res.body.map(b => b.title)
+        expect(titles).toHaveLength(helper.initialBlogs.length + 1)
+        expect(titles).toContain("This is a new blog")
+    })
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
