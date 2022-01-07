@@ -65,6 +65,19 @@ describe('HTTP POST', () => {
     })
 })
 
+describe('HTTP DELETE', () => {
+    test('deleting a blog reduces size by one and removes the right blog', async () => {
+        var res = await api.get('/api/blogs')
+        const blogsAtStart = res.body 
+        const idToRemove = blogsAtStart[0].id
+        await api.delete(`/api/blogs/${idToRemove}`)
+        res = await api.get('/api/blogs')
+        const titles = res.body.map(r => r.title)
+        expect(res.body).toHaveLength(helper.initialBlogs.length - 1)
+        expect(titles).not.toContain("React Patterns")
+    })
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })

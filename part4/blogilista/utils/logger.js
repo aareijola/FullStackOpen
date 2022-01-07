@@ -5,7 +5,7 @@ const info = (...params) => {
 }
   
 const error = (...params) => {
-  if (process.emv.NODE_ENV !== 'test') {
+  if (process.env.NODE_ENV !== 'test') {
     console.error(...params)
   }
 }

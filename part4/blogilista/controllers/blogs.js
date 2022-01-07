@@ -6,6 +6,20 @@ blogsRouter.get('/', async (req, res) => {
   res.json(blogs.map(blog => blog.toJSON()))
 })
 
+blogsRouter.get('/:id', async (req, res) => {
+  const blog = await Blog.findById(req.params.id)
+  if (blog) {
+    res.json(blog.toJSON())
+  } else {
+    res.status(400).end()
+  }
+})
+
+blogsRouter.delete('/:id', async (req, res) => {
+  await Blog.findByIdAndRemove(req.params.id)
+  res.status(204).end()
+})
+
 blogsRouter.post('/', async (req, res) => {
   const blog = new Blog(req.body)
   if (!blog.likes) {
