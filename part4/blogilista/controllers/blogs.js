@@ -11,8 +11,12 @@ blogsRouter.post('/', async (req, res) => {
   if (!blog.likes) {
     blog.likes = 0
   }
-  const result = await blog.save()
-  res.status(201).json(result)
+  if (blog.title === undefined || blog.url === undefined) {
+    res.status(400).end()
+  } else {
+    const result = await blog.save()
+    res.status(201).json(result)
+  }
 })
 
 module.exports = blogsRouter

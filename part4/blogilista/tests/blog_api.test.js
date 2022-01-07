@@ -55,6 +55,14 @@ describe('HTTP POST', () => {
         const addedBlog = res.body.find(b => b.author === 'aareijo')
         expect(addedBlog.likes).toEqual(0)
     })
+    test('adding a blog without the title-field results in status code 400', async () => {
+        const {title, ...newBlogWithoutTitle} = newBlog
+        await api.post('/api/blogs').send(newBlogWithoutTitle).expect(400)
+    })
+    test('adding a blog without the url-field results in status code 400', async () => {
+        const {url, ...newBlogWithoutUrl} = newBlog
+        await api.post('/api/blogs').send(newBlogWithoutUrl).expect(400)
+    })
 })
 
 afterAll(() => {
