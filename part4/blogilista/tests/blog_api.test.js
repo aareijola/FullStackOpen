@@ -22,6 +22,10 @@ describe('HTTP GET', () => {
         const res = await api.get('/api/blogs')
         expect(res.body).toHaveLength(helper.initialBlogs.length)
     })
+    test('blog id field is named exactly "id"', async () => {
+        const res = await api.get('/api/blogs')
+        expect(res.body[0].id).toBeDefined()
+    })
 })
 
 afterAll(() => {
