@@ -1,10 +1,11 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa2Fob21tYTIyIiwiaWQiOiI2MWU1YjM2MTY3MTRlYTM1NzE4OWI4YjQiLCJpYXQiOjE2NDI0NDgzNTB9.MtwbtNvTPSMSQqKnZ-gsidHqQvdSAHKFm3G6x2RRNbY
 
 {
-    "title": "My second post jou",
+    "title": "My third post now with auth!",
     "author": "Mr Authorman",
     "url": "www.someurl.smth",
-    "likes": "123",
+    "likes": "301",
     "user": "61e5b3616714ea357189b8b4"
 }
