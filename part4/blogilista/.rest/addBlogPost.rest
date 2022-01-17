@@ -1,9 +1,9 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa2Fob21tYTIyIiwiaWQiOiI2MWU1YjM2MTY3MTRlYTM1NzE4OWI4YjQiLCJpYXQiOjE2NDI0NDgzNTB9.MtwbtNvTPSMSQqKnZ-gsidHqQvdSAHKFm3G6x2RRNbY
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa2Fob21tYTIyIiwiaWQiOiI2MWU1YjM2MTY3MTRlYTM1NzE4OWI4YjQiLCJpYXQiOjE2NDI0NTEzMjF9.7LO0f5Neg_JyNMF1SCHDAHl51rRe3f7nZsNZZJecTR0
 
 {
-    "title": "Fourth post using token extractor middleware",
+    "title": "Final post yeee",
     "author": "Mr Authorman",
     "url": "www.someurl.smth",
     "likes": "301",
