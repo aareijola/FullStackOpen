@@ -3,7 +3,7 @@ Content-Type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa2Fob21tYTIyIiwiaWQiOiI2MWU1YjM2MTY3MTRlYTM1NzE4OWI4YjQiLCJpYXQiOjE2NDI0NDgzNTB9.MtwbtNvTPSMSQqKnZ-gsidHqQvdSAHKFm3G6x2RRNbY
 
 {
-    "title": "My third post now with auth!",
+    "title": "Fourth post using token extractor middleware",
     "author": "Mr Authorman",
     "url": "www.someurl.smth",
     "likes": "301",
