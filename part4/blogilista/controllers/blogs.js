@@ -65,7 +65,7 @@ blogsRouter.post('/', middleware.userExtractor, async (req, res) => {
   if (!blog.likes) {
     blog.likes = 0
   }
-  if (blog.title === undefined || blog.url === undefined) {
+  if (blog.title === undefined || blog.url === undefined || !blog.title) {
     res.status(400).end()
   } else {
     const result = await blog.save()
