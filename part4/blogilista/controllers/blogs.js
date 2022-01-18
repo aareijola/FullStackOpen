@@ -19,7 +19,6 @@ blogsRouter.get('/:id', async (req, res) => {
 })
 
 blogsRouter.delete('/:id', middleware.userExtractor, async (req, res) => {
-  const body = req.body
   const user = req.user
   if (!user) {
     return res.status(401).json({ error: 'token missing or invalid' })
