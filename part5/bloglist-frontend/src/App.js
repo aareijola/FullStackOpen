@@ -39,26 +39,18 @@ const App = () => {
     setUser(null)
   }
 
-  const handleNewBlog = async (event) => { // Maybe edit here to make inputs states
-    event.preventDefault()
-    const newBlog = {
-      title: event.target[0].value,
-      author: event.target[1].value,
-      url: event.target[2].value
-    }
+  const createBlog = async (newBlogObject) => { 
     try {
-      const res = await blogService.create(newBlog)
-      setAlertMessage(`A new blog ${newBlog.title} by ${newBlog.author} added`)
+      const res = await blogService.create(newBlogObject)
+      setAlertMessage(`A new blog ${newBlogObject.title} by ${newBlogObject.author} added`)
       setTimeout(() => {setAlertMessage('')},5000)
       setBlogs(blogs.concat(res))
       blogFormRef.current.toggleVisibility()
-      event.target.reset()
     } catch (e) {
       console.log(e.message)
       setErrorMessage('Could not create a new blog post')
       setTimeout(() => {setErrorMessage('')}, 5000)
     }
-
   }
   
   useEffect(() => {
@@ -117,7 +109,7 @@ const App = () => {
         <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
       </div>
       <Togglable buttonLabel='Create new blog' ref={blogFormRef}>
-        <NewBlogForm onSubmit={handleNewBlog}/>
+        <NewBlogForm createBlog={createBlog}/>
       </Togglable>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
