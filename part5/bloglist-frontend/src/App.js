@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import NewBlogForm from './components/BlogForm'
 import blogService from './services/blogs'
@@ -15,6 +15,8 @@ const App = () => {
   const [password, setPassword] = useState("")
   const [errorMessage, setErrorMessage] = useState('')
   const [alertMessage, setAlertMessage] = useState('')
+
+  const blogFormRef = useRef()
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -49,6 +51,7 @@ const App = () => {
       setAlertMessage(`A new blog ${newBlog.title} by ${newBlog.author} added`)
       setTimeout(() => {setAlertMessage('')},5000)
       setBlogs(blogs.concat(res))
+      blogFormRef.current.toggleVisibility()
       event.target.reset()
     } catch (e) {
       console.log(e.message)
@@ -113,7 +116,7 @@ const App = () => {
       <div>
         <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
       </div>
-      <Togglable buttonLabel='Create new blog'>
+      <Togglable buttonLabel='Create new blog' ref={blogFormRef}>
         <NewBlogForm onSubmit={handleNewBlog}/>
       </Togglable>
       {blogs.map(blog =>
