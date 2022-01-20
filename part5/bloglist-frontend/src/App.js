@@ -18,6 +18,21 @@ const App = () => {
 
   const blogFormRef = useRef()
 
+  useEffect(() => {
+    blogService.getAll().then(blogs =>
+      setBlogs( blogs.sort((a, b) => b.likes - a.likes) )
+    )  
+  }, [])
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -43,7 +58,7 @@ const App = () => {
     const newBlog = {...blog, likes: blog.likes + 1}
     try {
       await blogService.update(newBlog)
-      setBlogs(blogs.map(b => b.id === blog.id ? newBlog : b))
+      setBlogs(blogs.map(b => b.id === blog.id ? newBlog : b).sort((a, b) => b.likes - a.likes))
     } catch (e) {
       setErrorMessage(`Error: ${e.message}`)
       setTimeout(() => {setErrorMessage('')}, 5000) 
@@ -64,21 +79,6 @@ const App = () => {
     }
   }
   
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
-  }, [])
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
-
   if (!user) {
     return (
       <div>
