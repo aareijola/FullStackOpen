@@ -47,4 +47,16 @@ describe('Test <Blog />', () => {
     expect(component.container).toHaveTextContent(blog.url)
     expect(component.container).toHaveTextContent(blog.likes)
   })
+  test('pressing like twice calls handler function twice', () => {
+    const mockHandler = jest.fn()
+    const component = render(
+      <Blog blog={blog} user={user} like={mockHandler}/>
+    )
+    const button = component.getByText('show')
+    fireEvent.click(button)
+    const likeButton = component.getByText('like')
+    fireEvent.click(likeButton)
+    fireEvent.click(likeButton)
+    expect(mockHandler.mock.calls).toHaveLength(2)
+  })
 })
