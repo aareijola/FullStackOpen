@@ -41,7 +41,7 @@ blogsRouter.put('/:id', async (req, res) => {
     url: body.url,
     likes: body.likes
   }
-  const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, newBlog, { new: true })
+  const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, newBlog, { new: true }).populate('user', {username: 1, name: 1, id: 1})
   if (updatedBlog) {
     res.json(updatedBlog)
   } else {
@@ -69,11 +69,14 @@ blogsRouter.post('/', middleware.userExtractor, async (req, res) => {
     res.status(400).end()
   } else {
     const result = await blog.save()
-
+    result.populate('user', {username: 1, name: 1, id: 1})
     user.blogs = user.blogs.concat(result._id)
-
-    await user.save()
-    res.status(201).json(result)
+    try {
+      await User.findByIdAndUpdate(user._id, user, { new: true })
+      res.status(201).json(result)
+    } catch (e) {
+      console.log('Error saving user to database:', e)
+    }
   }
 })
 

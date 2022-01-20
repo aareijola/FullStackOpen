@@ -34,11 +34,22 @@ const App = () => {
       setTimeout(() => {setErrorMessage('')},5000)
     }
   }
-  const handleLogout = async (event) => {
+  const handleLogout = async () => {
     window.localStorage.removeItem('loggedBlogUser')
     setUser(null)
   }
 
+  const handleLike = async (blog) => {
+    const newBlog = {...blog, likes: blog.likes + 1}
+    try {
+      await blogService.update(newBlog)
+      setBlogs(blogs.map(b => b.id === blog.id ? newBlog : b))
+    } catch (e) {
+      setErrorMessage(`Error: ${e.message}`)
+      setTimeout(() => {setErrorMessage('')}, 5000) 
+    }
+  }
+  
   const createBlog = async (newBlogObject) => { 
     try {
       const res = await blogService.create(newBlogObject)
@@ -112,7 +123,7 @@ const App = () => {
         <NewBlogForm createBlog={createBlog}/>
       </Togglable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} like={handleLike}/>
       )}
     </div>
   )
