@@ -3,6 +3,7 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 const middleware = require('../utils/middleware')
+const { db } = require('../models/blog')
 
 blogsRouter.get('/', async (req, res) => {
   const blogs = await Blog.find({}).populate('user', {username: 1, name: 1, id: 1})
@@ -24,8 +25,14 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (req, res) => {
     return res.status(401).json({ error: 'token missing or invalid' })
   }
   const blog = await Blog.findById(req.params.id)
+  if (!blog) {
+    return res.status(400).json({ error: 'invalid blog id'})
+  }
   if (user.toString() === blog.user.toString()) {
     await Blog.findByIdAndRemove(req.params.id)
+    const dbUser = await User.findById(user)
+    dbUser.blogs = dbUser.blogs.filter(b => b.toString() !== req.params.id)
+    await User.findByIdAndUpdate(user, dbUser, { new: true })
     res.status(204).end()
   }
   else {
@@ -51,10 +58,10 @@ blogsRouter.put('/:id', async (req, res) => {
 
 blogsRouter.post('/', middleware.userExtractor, async (req, res) => {
   const body = req.body
-  if (!req.user) {
+  const user = await User.findById(req.user)
+  if (!req.user || !user) {
     return res.status(401).json({ error: 'token missing or invalid' })
   }
-  const user = await User.findById(req.user)
   const blog = new Blog({
     title: body.title,
     author: body.author,

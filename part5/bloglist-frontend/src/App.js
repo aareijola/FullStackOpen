@@ -33,6 +33,18 @@ const App = () => {
     }
   }, [])
 
+  const handleRemove = async (blog) => {
+    try {
+      if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+        await blogService.remove(blog)
+        setBlogs(blogs.filter(b => b.id !== blog.id).sort((a, b) => b.likes - a.likes))
+      }
+    } catch (e) {
+      console.log('Error removing:', e)
+    }
+
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -123,7 +135,7 @@ const App = () => {
         <NewBlogForm createBlog={createBlog}/>
       </Togglable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} like={handleLike}/>
+        <Blog key={blog.id} blog={blog} like={handleLike} user={user} remove={handleRemove}/>
       )}
     </div>
   )
