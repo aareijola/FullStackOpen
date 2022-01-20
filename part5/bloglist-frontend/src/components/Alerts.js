@@ -1,4 +1,6 @@
 import react from "react"
+import propTypes from "prop-types"
+
 
 const Alert = ({message}) => {
     if (message === '') {
@@ -12,6 +14,10 @@ const Alert = ({message}) => {
     }
 }
 
+Alert.propTypes = {
+    message: propTypes.string.isRequired
+}
+
 const Error = ({message}) => {
     if (message === '') {
         return null
@@ -22,6 +28,10 @@ const Error = ({message}) => {
             </div>
         )
     }
+}
+
+Error.propTypes = {
+    message: propTypes.string.isRequired
 }
 
 export default { Alert, Error }
