@@ -11,8 +11,8 @@ import './index.css'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [alertMessage, setAlertMessage] = useState('')
 
@@ -21,7 +21,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs.sort((a, b) => b.likes - a.likes) )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -67,17 +67,17 @@ const App = () => {
   }
 
   const handleLike = async (blog) => {
-    const newBlog = {...blog, likes: blog.likes + 1}
+    const newBlog = { ...blog, likes: blog.likes + 1 }
     try {
       await blogService.update(newBlog)
       setBlogs(blogs.map(b => b.id === blog.id ? newBlog : b).sort((a, b) => b.likes - a.likes))
     } catch (e) {
       setErrorMessage(`Error: ${e.message}`)
-      setTimeout(() => {setErrorMessage('')}, 5000) 
+      setTimeout(() => {setErrorMessage('')}, 5000)
     }
   }
-  
-  const createBlog = async (newBlogObject) => { 
+
+  const createBlog = async (newBlogObject) => {
     try {
       const res = await blogService.create(newBlogObject)
       setAlertMessage(`A new blog ${newBlogObject.title} by ${newBlogObject.author} added`)
@@ -90,31 +90,31 @@ const App = () => {
       setTimeout(() => {setErrorMessage('')}, 5000)
     }
   }
-  
+
   if (!user) {
     return (
       <div>
         <h2>Log in to application</h2>
         <Alerts.Alert message={alertMessage}/>
-        <Alerts.Error message={errorMessage}/> 
+        <Alerts.Error message={errorMessage}/>
         <form onSubmit={handleLogin}>
           <div>
             username
-              <input
+            <input
               type="text"
               value={username}
               name="Username"
               onChange={({ target }) => setUsername(target.value)}
-              />
+            />
           </div>
           <div>
             password
-              <input
+            <input
               type="password"
               value={password}
               name="Password"
               onChange={({ target }) => setPassword(target.value)}
-              />
+            />
           </div>
           <button type='submit'>login</button>
 
@@ -122,7 +122,7 @@ const App = () => {
       </div>
     )
   }
-  
+
   return (
     <div>
       <h2>blogs</h2>
