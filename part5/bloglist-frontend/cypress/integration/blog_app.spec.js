@@ -69,6 +69,16 @@ describe('Blog app', function() {
         cy.get('@firstBlog')
           .contains('likes 1')
       })
+      it('User can remove blogs they added', function () {
+        cy.contains('second cool blog').as('secondBlog')
+          .contains('show').click()
+        cy.get('@secondBlog')
+          .contains('remove').click()
+        cy.on('window:alert', () => {
+          cy.contains('OK').click()
+        })
+        cy.get('html').should('not.contain', 'second cool blog')
+      })
     })
   })
 })
