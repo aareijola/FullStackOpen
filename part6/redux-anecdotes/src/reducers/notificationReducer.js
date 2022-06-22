@@ -13,11 +13,16 @@ const notificationSlice = createSlice({
             const message = action.payload
             state.message = message
         },
-        toggleVisibility(state, action) {
+        toggleNotificationVisibility(state, action) {
             state.visible = !state.visible
+        },
+        setNotificationVisibility(state, action) {
+            if (typeof(action.payload) === 'boolean') {
+                state.visible = action.payload
+            }
         }
     }
 })
 
-export const { setNotification, toggleVisibility } = notificationSlice.actions
+export const { setNotification, toggleNotificationVisibility, setNotificationVisibility } = notificationSlice.actions
 export default notificationSlice.reducer

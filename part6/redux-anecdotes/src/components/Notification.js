@@ -8,9 +8,11 @@ const Notification = () => {
     borderWidth: 1
   }
   return (
+    notification.visible ?
     <div style={style}>
-      {notification.visible ? notification.message : ''}
+      {notification.message}
     </div>
+    : <div/>
   )
 }
 
