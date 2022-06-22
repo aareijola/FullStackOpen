@@ -52,7 +52,8 @@ export const upvote = (id) => {
 export const create = (content) => {
   return {
     type: 'NEW_ANECDOTE',
-    data: asObject(content)
+    // data: asObject(content)
+    data: content
   }
 }
 
