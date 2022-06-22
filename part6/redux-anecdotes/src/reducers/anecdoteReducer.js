@@ -1,60 +1,39 @@
-const anecdotesAtStart = []
+import { createSlice } from "@reduxjs/toolkit"
+import anecdoteService from "../services/anecdotes"
 
-const getId = () => (100000 * Math.random()).toFixed(0)
+const initialState = {
+  anecdotes: []
+}
 
-const asObject = (anecdote) => {
-  return {
-    content: anecdote,
-    id: getId(),
-    votes: 0
+const anecdoteSlice = createSlice({
+    name: 'anecdotes',
+    initialState,
+    reducers: {
+        upvote(state, action) {
+            const id =  action.payload
+            const votedAnecdote = state.anecdotes.find(a => a.id === id)
+            const updatedAnecdote = {
+              ...votedAnecdote,
+              votes: votedAnecdote.votes +1
+            }
+            state.anecdotes = state.anecdotes.map(a => a.id === id ? updatedAnecdote: a)
+            .sort((a, b) => b.votes - a.votes)
+        },
+        setAnecdotes(state, action) {
+          state.anecdotes = action.payload
+        },
+        create(state, action)  {
+          state.anecdotes = [...state.anecdotes, action.payload]
+        }
+    }
+})
+
+export const { upvote, setAnecdotes, create } = anecdoteSlice.actions
+export const initializeAnecdotes = () => {
+  return async dispatch => {
+    const anecdotes = await anecdoteService.getAll()
+    dispatch(setAnecdotes(anecdotes))
   }
 }
 
-const initialState = anecdotesAtStart.map(asObject)
-
-const reducer = (state = initialState, action) => {
-  // console.log('state now: ', state)
-  // console.log('action', action)
-  switch (action.type) {
-    case 'UPVOTE':
-      const id = action.data.id
-      const votedAnecdote = state.find(a => a.id === id)
-      const updatedAnecdote = {
-        ...votedAnecdote,
-        votes: votedAnecdote.votes +1
-      }
-      return state.map(a => a.id === id ? updatedAnecdote : a).sort(
-        (a, b) => b.votes - a.votes
-      )
-    case 'NEW_ANECDOTE':
-      return [...state, action.data]
-    case 'SET':
-      return action.data
-    default:
-     return state
-  }
-}
-
-export const setAnecdotes = (anecdotes) => {
-  return {
-    type: 'SET',
-    data: anecdotes
-  }
-}
-
-export const upvote = (id) => {
-  return {
-    type: 'UPVOTE',
-    data: { id }
-  }
-}
-
-export const create = (content) => {
-  return {
-    type: 'NEW_ANECDOTE',
-    // data: asObject(content)
-    data: content
-  }
-}
-
-export default reducer
+export default anecdoteSlice.reducer
