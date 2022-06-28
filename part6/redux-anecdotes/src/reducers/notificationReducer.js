@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
   message: 'Default message',
-  visible: false
+  visible: false,
+  timerId: null
 }
 
 const notificationSlice = createSlice({
@@ -20,16 +21,20 @@ const notificationSlice = createSlice({
       if (typeof (action.payload) === 'boolean') {
         state.visible = action.payload
       }
+    },
+    setTimerId(state, action) {
+      clearTimeout(state.timerId)
+      state.timerId = action.payload
     }
   }
 })
 
-export const { setNotificationMessage, toggleNotificationVisibility, setNotificationVisibility } = notificationSlice.actions
+export const { setNotificationMessage, toggleNotificationVisibility, setNotificationVisibility, setTimerId } = notificationSlice.actions
 export const setNotification = ( message, duration ) => {
   return async dispatch => {
     dispatch(setNotificationMessage(message))
     dispatch(setNotificationVisibility(true))
-    setTimeout(() => dispatch(setNotificationVisibility(false)), duration * 1000)
+    dispatch(setTimerId(setTimeout(() => dispatch(setNotificationVisibility(false)), duration * 1000)))
   }
 }
 
