@@ -76,6 +76,11 @@ const CreateNew = (props) => {
     })
     navigate('/')
   }
+  const resetForm = () => {
+    content.reset()
+    author.reset()
+    info.reset()
+  }
 
   return (
     <div>
@@ -91,13 +96,13 @@ const CreateNew = (props) => {
         </div>
         <div>
           url for more info
-          <input {...info}/>
+          <input {...info} />
         </div>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button type="button" onClick={() => resetForm()}>reset</button>
       </form>
     </div>
   )
-
 }
 
 const Anecdote = ({ anecdote }) => {
