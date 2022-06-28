@@ -10,7 +10,7 @@ const AnecdoteList = () => {
   const dispatch = useDispatch()
   const vote = async (anecdote) => {
     dispatch(upvoteAnecdote(anecdote.id))
-    dispatch(setNotification(`You upvoted '${anecdote.content}'`, 10))
+    dispatch(setNotification(`You upvoted '${anecdote.content}'`, 5))
   }
 
   return (
