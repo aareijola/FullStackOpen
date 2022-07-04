@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa2Fob21tYTIyIiwiaWQiOiI2MWU4NmFhNDZhOTZlNmU4M2RkZTgyNzciLCJpYXQiOjE2NDI2MjQyNTZ9.W7Hzwknb1EFOykGe0n9-fIvOhfMsnzxez6taGjHbI6Q
+
+{
+    "title": "Final post yeee",
+    "author": "Mr Authorman",
+    "url": "www.someurl.smth",
+    "likes": "301"
+}
