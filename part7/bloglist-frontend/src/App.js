@@ -6,15 +6,17 @@ import loginService from './services/login'
 import Togglable from './components/Togglable'
 import Alerts from './components/Alerts'
 import './index.css'
+import { setError, setAlert } from './reducers/notificationReducer'
+import { useDispatch } from 'react-redux'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
-  const [alertMessage, setAlertMessage] = useState('')
+
   const blogFormRef = useRef()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     blogService
@@ -59,10 +61,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('Wrong username or password')
-      setTimeout(() => {
-        setErrorMessage('')
-      }, 5000)
+      dispatch(setError('Wrong username or password', 5))
     }
   }
   const handleLogout = async () => {
@@ -80,30 +79,24 @@ const App = () => {
           .sort((a, b) => b.likes - a.likes)
       )
     } catch (e) {
-      setErrorMessage(`Error: ${e.message}`)
-      setTimeout(() => {
-        setErrorMessage('')
-      }, 5000)
+      dispatch(setError(`Error: ${e.message}`))
     }
   }
 
   const createBlog = async (newBlogObject) => {
     try {
       const res = await blogService.create(newBlogObject)
-      setAlertMessage(
-        `A new blog ${newBlogObject.title} by ${newBlogObject.author} added`
+      dispatch(
+        setAlert(
+          `A new blog ${newBlogObject.title} by ${newBlogObject.author} added`,
+          5
+        )
       )
-      setTimeout(() => {
-        setAlertMessage('')
-      }, 5000)
       setBlogs(blogs.concat(res))
       blogFormRef.current.toggleVisibility()
     } catch (e) {
       console.log(e.message)
-      setErrorMessage('Could not create a new blog post')
-      setTimeout(() => {
-        setErrorMessage('')
-      }, 5000)
+      dispatch(setError('Could not create a new blog post', 5))
     }
   }
 
@@ -111,8 +104,8 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
-        <Alerts.Alert message={alertMessage} />
-        <Alerts.Error message={errorMessage} />
+        <Alerts.Alert />
+        <Alerts.Error />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -143,8 +136,8 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Alerts.Alert message={alertMessage} />
-      <Alerts.Error message={errorMessage} />
+      <Alerts.Alert />
+      <Alerts.Error />
       <div>
         <p>
           {user.name} logged in

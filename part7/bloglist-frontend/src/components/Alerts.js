@@ -1,28 +1,22 @@
 import React from 'react'
-import propTypes from 'prop-types'
+import { useSelector } from 'react-redux'
 
-const Alert = ({ message }) => {
-  if (message === '') {
+const Alert = () => {
+  const alert = useSelector((state) => state.notification.alert)
+  if (!alert.visible) {
     return null
   } else {
-    return <div className="alert">{message}</div>
+    return <div className="alert">{alert.message}</div>
   }
 }
 
-Alert.propTypes = {
-  message: propTypes.string.isRequired,
-}
-
-const Error = ({ message }) => {
-  if (message === '') {
+const Error = () => {
+  const error = useSelector((state) => state.notification.error)
+  if (!error.visible) {
     return null
   } else {
-    return <div className="error">{message}</div>
+    return <div className="error">{error.message}</div>
   }
-}
-
-Error.propTypes = {
-  message: propTypes.string.isRequired,
 }
 
 export default { Alert, Error }
