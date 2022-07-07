@@ -60,13 +60,17 @@ const calculateExercises = (hours: Array<number>, target: number): Result => {
   };
 };
 
-try {
-  const { target, hours } = parseExerciseArguments(process.argv);
-  console.log(calculateExercises(hours, target));
-} catch (e: unknown) {
-  if (e instanceof Error) {
-    console.log('Error:', e.message);
-  } else {
-    console.log('Unkown error');
+if (require.main === module) {
+  try {
+    const { target, hours } = parseExerciseArguments(process.argv);
+    console.log(calculateExercises(hours, target));
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.log('Error:', e.message);
+    } else {
+      console.log('Unkown error');
+    }
   }
 }
+
+export default calculateExercises;

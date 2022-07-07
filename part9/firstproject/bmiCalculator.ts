@@ -38,15 +38,17 @@ const calculateBmi = (height: number, weight: number): string => {
   }
 };
 
-try {
-  const { height, weight } = parseBmiArguments(process.argv);
-  console.log(calculateBmi(height, weight));
-} catch (e: unknown) {
-  if (e instanceof Error) {
-    console.log('Error:', e.message);
-  } else {
-    console.log('Unknown error');
+if (require.main === module) {
+  try {
+    const { height, weight } = parseBmiArguments(process.argv);
+    console.log(calculateBmi(height, weight));
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.log('Error:', e.message);
+    } else {
+      console.log('Unknown error');
+    }
   }
 }
 
-export { calculateBmi };
+export default calculateBmi;
