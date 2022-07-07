@@ -48,3 +48,5 @@ try {
     console.log('Unknown error');
   }
 }
+
+export { calculateBmi };
