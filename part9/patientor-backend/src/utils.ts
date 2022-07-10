@@ -8,6 +8,7 @@ const isDate = (date: string): boolean => {
   return Boolean(Date.parse(date));
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isGender = (gender: any): gender is Gender => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   return Object.values(Gender).includes(gender);
@@ -48,15 +49,15 @@ const parseOccupation = (occupation: unknown): string => {
   return occupation;
 };
 
-type Fields = {
+export interface Fields {
   name: unknown;
   dateOfBirth: unknown;
   ssn: unknown;
   gender: unknown;
   occupation: unknown;
-};
+}
 
-const toNewPatientEntry = ({
+const toNewPatient = ({
   name,
   dateOfBirth,
   ssn,
@@ -69,8 +70,9 @@ const toNewPatientEntry = ({
     ssn: parseSSN(ssn),
     gender: parseGender(gender),
     occupation: parseOccupation(occupation),
+    entries: [],
   };
   return newEntry;
 };
 
-export default toNewPatientEntry;
+export default toNewPatient;
