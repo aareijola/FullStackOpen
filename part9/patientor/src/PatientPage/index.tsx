@@ -2,8 +2,24 @@ import axios from 'axios';
 import { apiBaseUrl } from '../constants';
 import { useParams } from 'react-router-dom';
 import { updatePatient, useStateValue } from '../state';
-import { Patient } from '../types';
+import { Patient, Entry } from '../types';
 import { Male, Female } from '@mui/icons-material';
+
+const EntryComponent = ({ entry }: { entry: Entry }) => {
+  return (
+    <div>
+      <p>
+        {entry.date + ' '}
+        <i>{entry.description}</i>
+      </p>
+      <ul>
+        {entry.diagnosisCodes?.map((d) => (
+          <li key={d}>{d}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 const PatientPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -55,6 +71,14 @@ const PatientPage = () => {
         ssn: {patient.ssn} <br />
         occupation: {patient.occupation}
       </p>
+      {patient.entries?.length === 0 ? null : (
+        <p>
+          <b>Entries</b>
+        </p>
+      )}
+      {!patient.entries
+        ? null
+        : patient.entries.map((e) => <EntryComponent entry={e} key={e.id} />)}
     </div>
   );
 };
