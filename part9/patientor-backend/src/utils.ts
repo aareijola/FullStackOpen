@@ -1,4 +1,10 @@
-import { Gender, NewPatient, Entry } from './types';
+import {
+  Gender,
+  NewPatient,
+  Entry,
+  NewEntry,
+  HealthCheckRating,
+} from './types';
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -49,21 +55,47 @@ const parseOccupation = (occupation: unknown): string => {
   return occupation;
 };
 
-const isEntry = (entry: unknown): entry is Entry => {
+export const isEntry = (entry: unknown): entry is Entry => {
   const castEntry = entry as Entry;
-  return (
-    isString(castEntry.type) &&
-    ['Hospital', 'OccupationalHealthcare', 'HealthCheck'].includes(
-      castEntry.type
-    )
-  );
+  if (
+    !castEntry.date ||
+    !castEntry.specialist ||
+    !isDate(castEntry.date) ||
+    !isString(castEntry.specialist)
+  ) {
+    return false;
+  }
+  switch (castEntry.type) {
+    case 'Hospital':
+      if (!castEntry.discharge) {
+        return false;
+      }
+      break;
+    case 'OccupationalHealthcare':
+      if (!castEntry.employerName || !isString(castEntry.employerName)) {
+        return false;
+      }
+      break;
+    case 'HealthCheck':
+      if (
+        !Object.values(HealthCheckRating).includes(castEntry.healthCheckRating)
+      ) {
+        return false;
+      }
+      break;
+    default:
+      return false;
+  }
+
+  return true;
 };
 
 const parseEntries = (entries: unknown): Array<Entry> => {
   const castEntries = entries as Array<unknown>;
   for (let i = 0; i < castEntries.length; i++) {
     if (!isEntry(castEntries[i])) {
-      throw new Error('Incoprrect or missing entries');
+      console.log(castEntries[i]);
+      throw new Error('Incorrect or missing entries');
     }
   }
   return castEntries as Array<Entry>;
@@ -78,7 +110,15 @@ export interface Fields {
   entries: unknown;
 }
 
-const toNewPatient = ({
+export const toNewEntry = (entry: unknown): NewEntry => {
+  if (isEntry(entry)) {
+    return entry as NewEntry;
+  } else {
+    throw new Error('Malformatted entry');
+  }
+};
+
+export const toNewPatient = ({
   name,
   dateOfBirth,
   ssn,
@@ -96,5 +136,3 @@ const toNewPatient = ({
   };
   return newEntry;
 };
-
-export default toNewPatient;
