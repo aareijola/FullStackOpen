@@ -6,6 +6,7 @@ import { Patient, Entry } from '../types';
 import { Male, Female } from '@mui/icons-material';
 
 const EntryComponent = ({ entry }: { entry: Entry }) => {
+  const [{ diagnoses }] = useStateValue();
   return (
     <div>
       <p>
@@ -14,7 +15,9 @@ const EntryComponent = ({ entry }: { entry: Entry }) => {
       </p>
       <ul>
         {entry.diagnosisCodes?.map((d) => (
-          <li key={d}>{d}</li>
+          <li key={d}>
+            {d + ' '} {diagnoses[d].name}
+          </li>
         ))}
       </ul>
     </div>
