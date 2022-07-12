@@ -2,26 +2,138 @@ import axios from 'axios';
 import { apiBaseUrl } from '../constants';
 import { useParams } from 'react-router-dom';
 import { updatePatient, useStateValue } from '../state';
-import { Patient, Entry } from '../types';
-import { Male, Female } from '@mui/icons-material';
+import {
+  Patient,
+  Entry,
+  HospitalEntry,
+  OccupationalHealthcareEntry,
+  HealthCheckEntry,
+} from '../types';
+import { Male, Female, MedicalServices, Work } from '@mui/icons-material';
 
-const EntryComponent = ({ entry }: { entry: Entry }) => {
+const assertNever = (value: never): never => {
+  throw new Error(`Unhandled entry type: ${JSON.stringify(value)}`);
+};
+
+const HospitalEntryComponent = ({ entry }: { entry: HospitalEntry }) => {
   const [{ diagnoses }] = useStateValue();
   return (
-    <div>
+    <div
+      style={{
+        border: '1px solid black',
+        borderRadius: '5px',
+        padding: '3px',
+        paddingLeft: '10px',
+      }}
+    >
       <p>
         {entry.date + ' '}
-        <i>{entry.description}</i>
+        <MedicalServices />
       </p>
-      <ul>
+      <div>
         {entry.diagnosisCodes?.map((d) => (
-          <li key={d}>
-            {d + ' '} {diagnoses[d].name}
-          </li>
+          <div key={d}>
+            <i>- {diagnoses[d].name}</i>
+          </div>
         ))}
-      </ul>
+      </div>
+      <div>
+        Discharge: {entry.discharge.date}: {entry.discharge.criteria} &#9989;
+      </div>
+      <br />
+      <div>Diagnose by {entry.specialist}</div>
     </div>
   );
+};
+
+const OccupationalHealthcareEntryComponent = ({
+  entry,
+}: {
+  entry: OccupationalHealthcareEntry;
+}) => {
+  const [{ diagnoses }] = useStateValue();
+  return (
+    <div
+      style={{
+        border: '1px solid black',
+        borderRadius: '5px',
+        padding: '3px',
+        paddingLeft: '10px',
+      }}
+    >
+      <p>
+        {entry.date + ' '}
+        <Work />
+        <i> {entry.employerName}</i>
+      </p>
+      <div>
+        <i>{entry.description}</i>
+      </div>
+      <br></br>
+      <div>
+        {entry.diagnosisCodes?.map((d) => (
+          <div key={d}>
+            <i>- {diagnoses[d].name}</i>
+          </div>
+        ))}
+      </div>
+      {entry.sickLeave ? (
+        <div>
+          <br />
+          on sick leave: {entry.sickLeave.startDate} to{' '}
+          {entry.sickLeave.endDate} 🛌
+        </div>
+      ) : null}
+      <br />
+      <div>Diagnose by {entry.specialist}</div>
+    </div>
+  );
+};
+
+const HealthCheckEntryComponent = ({ entry }: { entry: HealthCheckEntry }) => {
+  const [{ diagnoses }] = useStateValue();
+  const healthEmojis = ['💚', '💛', '🧡', '💔'];
+  return (
+    <div
+      style={{
+        border: '1px solid black',
+        borderRadius: '5px',
+        padding: '3px',
+        paddingLeft: '10px',
+      }}
+    >
+      <p>
+        {entry.date + ' '}
+        <MedicalServices />
+      </p>
+      <div>
+        <i>{entry.description}</i>
+      </div>
+      <div>
+        {entry.diagnosisCodes?.map((d) => (
+          <div key={d}>
+            <i>- {diagnoses[d].name}</i>
+          </div>
+        ))}
+      </div>
+      <div>{healthEmojis[entry.healthCheckRating]}</div>
+      <br />
+      <div>Diagnose by {entry.specialist}</div>
+    </div>
+  );
+};
+
+const EntryComponent = ({ entry }: { entry: Entry }) => {
+  switch (entry.type) {
+    case 'Hospital':
+      return <HospitalEntryComponent entry={entry} />;
+    case 'OccupationalHealthcare':
+      return <OccupationalHealthcareEntryComponent entry={entry} />;
+    case 'HealthCheck':
+      return <HealthCheckEntryComponent entry={entry} />;
+    default:
+      return assertNever(entry);
+  }
 };
 
 const PatientPage = () => {
