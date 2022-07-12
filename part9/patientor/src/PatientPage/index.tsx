@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { apiBaseUrl } from '../constants';
 import { useParams } from 'react-router-dom';
-import { useStateValue } from '../state';
+import { updatePatient, useStateValue } from '../state';
 import { Patient } from '../types';
 import { Male, Female } from '@mui/icons-material';
 
@@ -12,7 +12,7 @@ const PatientPage = () => {
       const { data: patient } = await axios.get<Patient>(
         `${apiBaseUrl}/patients/${id}`
       );
-      dispatch({ type: 'UPDATE_PATIENT', payload: patient });
+      dispatch(updatePatient(patient));
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
         console.error(e?.response?.data || 'Unrecognized axios error');
@@ -52,7 +52,7 @@ const PatientPage = () => {
         {genderIcon}
       </h2>
       <p>
-        ssh: {patient.ssn} <br />
+        ssn: {patient.ssn} <br />
         occupation: {patient.occupation}
       </p>
     </div>
