@@ -1,4 +1,4 @@
-import { Gender, NewPatient } from './types';
+import { Gender, NewPatient, Entry } from './types';
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -49,12 +49,33 @@ const parseOccupation = (occupation: unknown): string => {
   return occupation;
 };
 
+const isEntry = (entry: unknown): entry is Entry => {
+  const castEntry = entry as Entry;
+  return (
+    isString(castEntry.type) &&
+    ['Hospital', 'OccupationalHealthcare', 'HealthCheck'].includes(
+      castEntry.type
+    )
+  );
+};
+
+const parseEntries = (entries: unknown): Array<Entry> => {
+  const castEntries = entries as Array<unknown>;
+  for (let i = 0; i < castEntries.length; i++) {
+    if (!isEntry(castEntries[i])) {
+      throw new Error('Incoprrect or missing entries');
+    }
+  }
+  return castEntries as Array<Entry>;
+};
+
 export interface Fields {
   name: unknown;
   dateOfBirth: unknown;
   ssn: unknown;
   gender: unknown;
   occupation: unknown;
+  entries: unknown;
 }
 
 const toNewPatient = ({
@@ -63,6 +84,7 @@ const toNewPatient = ({
   ssn,
   gender,
   occupation,
+  entries,
 }: Fields): NewPatient => {
   const newEntry: NewPatient = {
     name: parseName(name),
@@ -70,7 +92,7 @@ const toNewPatient = ({
     ssn: parseSSN(ssn),
     gender: parseGender(gender),
     occupation: parseOccupation(occupation),
-    entries: [],
+    entries: parseEntries(entries),
   };
   return newEntry;
 };
