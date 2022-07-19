@@ -1,5 +1,7 @@
 import axios from 'axios';
+import React from 'react';
 import { apiBaseUrl } from '../constants';
+import { Button } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import { updatePatient, useStateValue } from '../state';
 import {
@@ -10,6 +12,8 @@ import {
   HealthCheckEntry,
 } from '../types';
 import { Male, Female, MedicalServices, Work } from '@mui/icons-material';
+import AddEntryModal from '../AddEntryModal';
+import { EntryFormValues } from '../AddEntryModal/AddEntryForm';
 
 const assertNever = (value: never): never => {
   throw new Error(`Unhandled entry type: ${JSON.stringify(value)}`);
@@ -138,6 +142,18 @@ const EntryComponent = ({ entry }: { entry: Entry }) => {
 
 const PatientPage = () => {
   const { id } = useParams<{ id: string }>();
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+
+  const openModal = (): void => setModalOpen(true);
+
+  const closeModal = (): void => setModalOpen(false);
+
+  const submitNewEntry = (values: EntryFormValues) => {
+    // LISÄÄ ASYNC!!!!!
+    console.log(values);
+    closeModal();
+  };
+
   const updatePatientData = async (id: string) => {
     try {
       const { data: patient } = await axios.get<Patient>(
@@ -194,6 +210,14 @@ const PatientPage = () => {
       {!patient.entries
         ? null
         : patient.entries.map((e) => <EntryComponent entry={e} key={e.id} />)}
+      <AddEntryModal
+        modalOpen={modalOpen}
+        onSubmit={submitNewEntry}
+        onClose={closeModal}
+      />
+      <Button variant="contained" onClick={() => openModal()}>
+        Add new entry
+      </Button>
     </div>
   );
 };

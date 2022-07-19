@@ -132,7 +132,7 @@ export const toNewPatient = ({
     ssn: parseSSN(ssn),
     gender: parseGender(gender),
     occupation: parseOccupation(occupation),
-    entries: parseEntries(entries),
+    entries: entries ? parseEntries(entries) : [],
   };
   return newEntry;
 };
