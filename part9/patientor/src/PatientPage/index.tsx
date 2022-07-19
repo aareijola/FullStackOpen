@@ -1,19 +1,19 @@
-import axios from 'axios';
-import React from 'react';
-import { apiBaseUrl } from '../constants';
-import { Button } from '@material-ui/core';
-import { useParams } from 'react-router-dom';
-import { updatePatient, useStateValue } from '../state';
+import axios from "axios";
+import React from "react";
+import { apiBaseUrl } from "../constants";
+import { Button } from "@material-ui/core";
+import { useParams } from "react-router-dom";
+import { addEntryToPatient, updatePatient, useStateValue } from "../state";
 import {
   Patient,
   Entry,
   HospitalEntry,
   OccupationalHealthcareEntry,
   HealthCheckEntry,
-} from '../types';
-import { Male, Female, MedicalServices, Work } from '@mui/icons-material';
-import AddEntryModal from '../AddEntryModal';
-import { EntryFormValues } from '../AddEntryModal/AddEntryForm';
+} from "../types";
+import { Male, Female, MedicalServices, Work } from "@mui/icons-material";
+import AddEntryModal from "../AddEntryModal";
+import { EntryFormValues } from "../AddEntryModal/AddEntryForm";
 
 const assertNever = (value: never): never => {
   throw new Error(`Unhandled entry type: ${JSON.stringify(value)}`);
@@ -24,14 +24,14 @@ const HospitalEntryComponent = ({ entry }: { entry: HospitalEntry }) => {
   return (
     <div
       style={{
-        border: '1px solid black',
-        borderRadius: '5px',
-        padding: '3px',
-        paddingLeft: '10px',
+        border: "1px solid black",
+        borderRadius: "5px",
+        padding: "3px",
+        paddingLeft: "10px",
       }}
     >
       <p>
-        {entry.date + ' '}
+        {entry.date + " "}
         <MedicalServices />
       </p>
       <div>
@@ -59,14 +59,14 @@ const OccupationalHealthcareEntryComponent = ({
   return (
     <div
       style={{
-        border: '1px solid black',
-        borderRadius: '5px',
-        padding: '3px',
-        paddingLeft: '10px',
+        border: "1px solid black",
+        borderRadius: "5px",
+        padding: "3px",
+        paddingLeft: "10px",
       }}
     >
       <p>
-        {entry.date + ' '}
+        {entry.date + " "}
         <Work />
         <i> {entry.employerName}</i>
       </p>
@@ -84,7 +84,7 @@ const OccupationalHealthcareEntryComponent = ({
       {entry.sickLeave ? (
         <div>
           <br />
-          on sick leave: {entry.sickLeave.startDate} to{' '}
+          on sick leave: {entry.sickLeave.startDate} to{" "}
           {entry.sickLeave.endDate} 🛌
         </div>
       ) : null}
@@ -96,18 +96,18 @@ const OccupationalHealthcareEntryComponent = ({
 
 const HealthCheckEntryComponent = ({ entry }: { entry: HealthCheckEntry }) => {
   const [{ diagnoses }] = useStateValue();
-  const healthEmojis = ['💚', '💛', '🧡', '💔'];
+  const healthEmojis = ["💚", "💛", "🧡", "💔"];
   return (
     <div
       style={{
-        border: '1px solid black',
-        borderRadius: '5px',
-        padding: '3px',
-        paddingLeft: '10px',
+        border: "1px solid black",
+        borderRadius: "5px",
+        padding: "3px",
+        paddingLeft: "10px",
       }}
     >
       <p>
-        {entry.date + ' '}
+        {entry.date + " "}
         <MedicalServices />
       </p>
       <div>
@@ -129,11 +129,11 @@ const HealthCheckEntryComponent = ({ entry }: { entry: HealthCheckEntry }) => {
 
 const EntryComponent = ({ entry }: { entry: Entry }) => {
   switch (entry.type) {
-    case 'Hospital':
+    case "Hospital":
       return <HospitalEntryComponent entry={entry} />;
-    case 'OccupationalHealthcare':
+    case "OccupationalHealthcare":
       return <OccupationalHealthcareEntryComponent entry={entry} />;
-    case 'HealthCheck':
+    case "HealthCheck":
       return <HealthCheckEntryComponent entry={entry} />;
     default:
       return assertNever(entry);
@@ -148,10 +148,21 @@ const PatientPage = () => {
 
   const closeModal = (): void => setModalOpen(false);
 
-  const submitNewEntry = (values: EntryFormValues) => {
-    // LISÄÄ ASYNC!!!!!
-    console.log(values);
-    closeModal();
+  const submitNewEntry = async (values: EntryFormValues) => {
+    try {
+      const { data: newEntry } = await axios.post<Entry>(
+        `${apiBaseUrl}/patients/${id as string}/entries`,
+        values
+      );
+      dispatch(addEntryToPatient(newEntry, patient));
+      closeModal();
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        console.error(e?.response?.data || "Unrecognized axios error");
+      } else {
+        console.error("Unknown error", e);
+      }
+    }
   };
 
   const updatePatientData = async (id: string) => {
@@ -162,9 +173,9 @@ const PatientPage = () => {
       dispatch(updatePatient(patient));
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
-        console.error(e?.response?.data || 'Unrecognized axios error');
+        console.error(e?.response?.data || "Unrecognized axios error");
       } else {
-        console.error('Unknown error', e);
+        console.error("Unknown error", e);
       }
     }
   };
@@ -182,10 +193,10 @@ const PatientPage = () => {
   }
   let genderIcon = null;
   switch (patient.gender) {
-    case 'male':
+    case "male":
       genderIcon = <Male />;
       break;
-    case 'female':
+    case "female":
       genderIcon = <Female />;
       break;
     default:
@@ -195,7 +206,7 @@ const PatientPage = () => {
   return (
     <div>
       <h2>
-        {patient.name + ' '}
+        {patient.name + " "}
         {genderIcon}
       </h2>
       <p>

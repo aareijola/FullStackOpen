@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ErrorMessage, Field, FieldProps, FormikProps } from "formik";
 import {
   Select,
@@ -7,7 +7,7 @@ import {
   TextField as TextFieldMUI,
   Typography,
 } from "@material-ui/core";
-import { Diagnosis, Gender } from "../types";
+import { Diagnosis, Gender, HealthCheckRating } from "../types";
 import { InputLabel } from "@material-ui/core";
 import Input from "@material-ui/core/Input";
 import { TypeOption } from "../AddEntryModal/AddEntryForm";
@@ -18,11 +18,16 @@ export type GenderOption = {
   label: string;
 };
 
+export type HealthCheckRatingOption = {
+  value: HealthCheckRating;
+  label: string;
+};
+
 // props for select field component
 type SelectFieldProps = {
   name: string;
   label: string;
-  options: GenderOption[] | TypeOption[];
+  options: GenderOption[] | TypeOption[] | HealthCheckRatingOption[];
 };
 
 const FormikSelect = ({ field, ...props }: FieldProps) => (
@@ -112,14 +117,17 @@ export const DiagnosisSelection = ({
   setFieldValue: FormikProps<{ diagnosisCodes: string[] }>["setFieldValue"];
   setFieldTouched: FormikProps<{ diagnosisCodes: string[] }>["setFieldTouched"];
 }) => {
-  const [selectedDiagnoses, setDiagnoses] = useState<string[]>([]);
+  const [selectedDiagnoses, setSelectedDiagnoses] = useState<string[]>([]);
   const field = "diagnosisCodes";
   const onChange = (data: string[]) => {
-    setDiagnoses([...data]);
+    setSelectedDiagnoses([...data]);
     setFieldTouched(field, true);
-    setFieldValue(field, selectedDiagnoses);
+    // setFieldValue(field, selectedDiagnoses);
+    // setFieldValue(field, [...data]);
   };
-
+  useEffect(() => {
+    setFieldValue(field, selectedDiagnoses);
+  }, [selectedDiagnoses]);
   const stateOptions = diagnoses.map((diagnosis) => ({
     key: diagnosis.code,
     text: `${diagnosis.name} (${diagnosis.code})`,

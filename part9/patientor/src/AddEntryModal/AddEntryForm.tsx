@@ -1,14 +1,18 @@
 import { useStateValue } from "../state";
-import { Entry, EntryType } from "../types";
+import { Entry, EntryType, HealthCheckRating } from "../types";
 import { Button, Grid } from "@material-ui/core";
 import { Field, Formik, Form } from "formik";
 import {
   DiagnosisSelection,
   TextField,
   SelectField,
+  HealthCheckRatingOption,
 } from "../AddPatientModal/FormField";
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown
+  ? Omit<T, K>
+  : never;
 
-export type EntryFormValues = Omit<Entry, "id">;
+export type EntryFormValues = UnionOmit<Entry, "id">;
 
 interface Props {
   onSubmit: (values: EntryFormValues) => void;
@@ -26,16 +30,24 @@ const typeOptions: TypeOption[] = [
   { value: EntryType.OccupationalHealthcare, label: "Occupational healthcare" },
 ];
 
+const ratingOptions: HealthCheckRatingOption[] = [
+  { value: HealthCheckRating.CriticalRisk, label: "Critical risk" },
+  { value: HealthCheckRating.HighRisk, label: "High risk" },
+  { value: HealthCheckRating.LowRisk, label: "Low risk" },
+  { value: HealthCheckRating.Healthy, label: "Healthy" },
+];
+
 export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
   const [{ diagnoses }] = useStateValue();
 
   return (
     <Formik
       initialValues={{
-        type: "Hospital",
+        type: "HealthCheck",
         date: "",
         description: "",
         specialist: "",
+        healthCheckRating: HealthCheckRating.Healthy,
       }}
       onSubmit={onSubmit}
       validate={(values) => {
@@ -44,8 +56,8 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         if (!values.type) {
           errors.type = requiredError;
         }
-        if (values.type !== "Hospital") {
-          errors.type = "Only hospital type allowed currently";
+        if (values.type !== "HealthCheck") {
+          errors.type = "Only health check type allowed currently";
         }
         if (!values.date) {
           errors.date = requiredError;
@@ -59,7 +71,7 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         return errors;
       }}
     >
-      {({ isValid, dirty, setFieldValue, setFieldTouched }) => {
+      {({ isValid, dirty, setFieldValue, setFieldTouched, values }) => {
         return (
           <Form className="form ui">
             <Field
@@ -81,6 +93,13 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
               component={TextField}
             />
             <SelectField label="Type" name="type" options={typeOptions} />
+            {values.type === "HealthCheck" ? (
+              <SelectField
+                label="Rating"
+                name="healthCheckRating"
+                options={ratingOptions}
+              />
+            ) : null}
             <DiagnosisSelection
               setFieldValue={setFieldValue}
               setFieldTouched={setFieldTouched}
@@ -109,7 +128,6 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
                 >
                   Add
                 </Button>
-                <p>Adding NYI, submitted values are printed to console</p>
               </Grid>
             </Grid>
           </Form>
